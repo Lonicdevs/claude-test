@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+# When this workflow runs
+on:
+  push:
+    branches: [ main, develop ]  # Run when code pushed to main or develop
+  pull_request:
+    branches: [ main ]           # Run when someone creates a PR to main
+
+# What happens when workflow runs
+jobs:
+  # Job 1: Test and quality checks
+  test:
+    runs-on: ubuntu-latest       # Use Ubuntu server in the cloud
+    
+    steps:
+    - name: Checkout code        # Download your code from GitHub
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js        # Install Node.js version 18
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'             # Speed up by caching npm downloads
+        
+    - name: Install dependencies  # Run npm install
+      run: npm ci                # 'ci' is faster than 'install' for automation
+      
+    - name: Run linting          # Check code style and errors
+      run: npm run lint --if-present  # Only run if lint script exists
+      
+    - name: Run tests            # Run your tests
+      run: npm test --if-present
+      
+    - name: Build project        # Make sure it builds successfully
+      run: npm run build --if-present
+
+  # Job 2: Security checks
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security audit   # Check for vulnerable dependencies
+      run: npm audit --audit-level high
+      continue-on-error: true    # Don't fail build if audit finds issues
+      
+    - name: Initialize CodeQL    # GitHub's security scanning
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
