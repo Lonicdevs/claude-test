@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "levilonic"
+    assignees:
+      - "levilonic"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
