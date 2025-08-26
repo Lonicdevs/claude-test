@@ -1,0 +1,61 @@
+{
+  "name": "flexible-office-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "type": "module",
+  "bin": {
+    "office-scraper": "./dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/main.ts",
+    "start": "node dist/main.js",
+    "db:init": "tsx src/main.ts init",
+    "db:status": "tsx src/main.ts db-status",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "pipeline": "tsx src/main.ts run-discovery-pipeline",
+    "workers": "tsx src/main.ts workers --all",
+    "stats": "tsx src/main.ts stats",
+    "load-operators": "tsx src/main.ts load-operators",
+    "discover": "tsx src/main.ts discover-domains",
+    "verify": "tsx src/main.ts verify-domains",
+    "test": "echo \"No tests configured yet\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^24.3.0",
+    "nodemon": "^3.1.10",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.873.0",
+    "@prisma/client": "^6.14.0",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.11.0",
+    "bullmq": "^5.58.2",
+    "cheerio": "^1.1.2",
+    "commander": "^14.0.0",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.2.1",
+    "ioredis": "^5.7.0",
+    "pino": "^9.9.0",
+    "playwright": "^1.55.0",
+    "prisma": "^6.14.0",
+    "redis": "^5.8.2",
+    "robots-txt-parse": "^2.0.1",
+    "sitemap-parser": "^0.1.0",
+    "tldts": "^7.0.12",
+    "uuid": "^11.1.0",
+    "whatwg-url": "^14.2.0",
+    "zod": "^4.1.3"
+  }
+}

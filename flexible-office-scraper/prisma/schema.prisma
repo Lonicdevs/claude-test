@@ -1,0 +1,323 @@
+// This is your Prisma schema file for the Office-First Scraping System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== CORE OPERATOR & DOMAIN MODELS ==========
+
+model Operator {
+  id              String   @id @default(uuid())
+  brand_name      String
+  legal_name      String?
+  tagline         String?
+  about_text      String?
+  hq_address_json Json?    // Structured address
+  phone           String?
+  emails          String[] // Multiple email addresses found
+  social_urls     String[] // Social media URLs
+  brand_tokens    String[] // Keywords for verification
+  logo_urls       String[] // Logo image URLs
+  brand_colors    String[] // Hex colors if detected
+  company_ids     String[] // Company registration numbers if found
+  primary_domain  String?  // Verified primary domain
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  // Relationships
+  offices            Office[]
+  websites           Website[]
+  domain_candidates  DomainCandidate[]
+  products           Product[]
+  meeting_rooms      MeetingRoom[]
+  crawl_runs         CrawlRun[]
+
+  @@map("operators")
+}
+
+model DomainCandidate {
+  id           String    @id @default(uuid())
+  operator_id  String
+  url          String    // Full URL discovered
+  domain       String    // Extracted domain
+  source       String    // Where it was found (google, bing, etc.)
+  confidence   Float     // Confidence score 0-1
+  verified_at  DateTime?
+  rejected_at  DateTime?
+  rejection_reason String?
+  created_at   DateTime  @default(now())
+
+  operator     Operator  @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+
+  @@unique([operator_id, domain])
+  @@map("domain_candidates")
+}
+
+model Website {
+  id               String    @id @default(uuid())
+  operator_id      String
+  domain           String
+  canonical_url    String    // Final canonical URL after redirects
+  robots_txt_url   String?
+  sitemap_urls     String[]  // Multiple sitemaps
+  first_seen_at    DateTime
+  last_seen_at     DateTime
+  last_crawl_at    DateTime?
+  is_active        Boolean   @default(true)
+
+  operator         Operator  @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+  pages            Page[]
+
+  @@unique([operator_id, domain])
+  @@map("websites")
+}
+
+// ========== OFFICE-FIRST CORE MODEL ==========
+
+model Office {
+  id                 String    @id // Deterministic slug: hash(operator_id + name + address)
+  operator_id        String
+  slug               String    // URL-friendly identifier
+  name               String    // Office/location name
+  building_name      String?   // Building name if different
+  full_address       String?   // Complete address string
+  address_json       Json?     // Structured: street, city, region, postcode, country
+  geocode_json       Json?     // lat, lng if available
+  neighbourhood      String?   // Area/district
+  contact_json       Json?     // phone, email, form_url
+  opening_hours_json Json?     // Structured hours
+  amenities          String[]  // Normalized amenity codes
+  photos             String[]  // Photo URLs
+  virtual_tour_urls  String[]  // VR/360 tour links
+  transport_notes    String?   // Transit information
+  source_page_ids    String[]  // References to source pages
+  last_extraction_id String?   // Latest extraction that updated this office
+  next_crawl_at      DateTime? // When this office should be rescraped
+  crawl_priority     String    @default("medium") // high, medium, low
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+
+  // Relationships
+  operator           Operator       @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+  products           Product[]
+  meeting_rooms      MeetingRoom[]
+  rescrape_queue     RescrapeQueue[]
+
+  @@index([operator_id])
+  @@index([next_crawl_at])
+  @@map("offices")
+}
+
+// ========== PRODUCT & SPACE MODELS ==========
+
+model Product {
+  id                String    @id @default(uuid())
+  operator_id       String
+  office_id         String
+  space_type        String    // hot_desk, dedicated_desk, private_office, etc.
+  name              String?   // Product name if specified
+  description       String?   // Product description
+  capacity_min      Int?      // Minimum capacity
+  capacity_max      Int?      // Maximum capacity
+  availability_notes String?   // Availability information
+  min_term          String?   // Minimum commitment
+  term_options      String[]  // Available term lengths
+  pricing_json      Json?     // Structured pricing with currency, amounts, units
+  inclusions        String[]  // What's included
+  add_ons           String[]  // Available add-ons
+  booking_link      String?   // Direct booking URL
+  last_extraction_id String?  // Latest extraction
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  operator          Operator  @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+  office            Office    @relation(fields: [office_id], references: [id], onDelete: Cascade)
+
+  @@index([operator_id])
+  @@index([office_id])
+  @@index([space_type])
+  @@map("products")
+}
+
+model MeetingRoom {
+  id                String    @id @default(uuid())
+  operator_id       String
+  office_id         String
+  name              String    // Room name
+  capacity          Int?      // Max capacity
+  layouts           String[]  // Seating arrangements
+  rates_json        Json?     // Hourly, half-day, full-day rates
+  amenities         String[]  // Room-specific amenities
+  photos            String[]  // Room photos
+  booking_link      String?   // Booking URL
+  last_extraction_id String?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  operator          Operator  @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+  office            Office    @relation(fields: [office_id], references: [id], onDelete: Cascade)
+
+  @@index([operator_id])
+  @@index([office_id])
+  @@map("meeting_rooms")
+}
+
+// ========== PAGE & EXTRACTION MODELS ==========
+
+model Page {
+  id                String    @id @default(uuid())
+  website_id        String
+  canonical_url     String
+  page_type         String    // locations_index, city_index, location_detail, etc.
+  path              String    // URL path
+  title             String?   // Page title
+  meta_description  String?
+  last_http_status  Int?
+  etag              String?
+  last_modified     String?   // HTTP Last-Modified header
+  content_hash      String?   // Hash of visible content
+  last_seen_at      DateTime
+  robots_directives Json?     // noindex, nofollow, etc.
+  sitemap_discovered Boolean  @default(false)
+  crawl_priority    String    @default("medium")
+
+  website           Website     @relation(fields: [website_id], references: [id], onDelete: Cascade)
+  extractions       Extraction[]
+  raw_snapshots     RawSnapshot[]
+
+  @@unique([website_id, canonical_url])
+  @@index([page_type])
+  @@index([last_seen_at])
+  @@map("pages")
+}
+
+model Extraction {
+  id                String    @id @default(uuid())
+  page_id           String
+  scope_type        String    // 'operator', 'office', 'product', 'meeting_room'
+  scope_id          String    // ID of the entity this extraction belongs to
+  schema_version    String    // Version of extraction schema used
+  extracted_json    Json      // Raw extracted data
+  extraction_hash   String    // Hash of normalized extraction
+  confidence_score  Float?    // Confidence in extraction quality
+  selector_notes    Json?     // CSS selectors and extraction metadata
+  extracted_at      DateTime
+  scraper_version   String    // Version of scraper that did extraction
+
+  page              Page      @relation(fields: [page_id], references: [id], onDelete: Cascade)
+  diffs             Diff[]
+
+  @@index([scope_type, scope_id])
+  @@index([extracted_at])
+  @@map("extractions")
+}
+
+model RawSnapshot {
+  id               String   @id @default(uuid())
+  page_id          String
+  content_hash     String   // SHA256 of content
+  s3_key           String   // S3 object key
+  s3_bucket        String   // S3 bucket name
+  fetch_tool       String   // 'axios', 'playwright'
+  http_status      Int
+  headers_json     Json     // HTTP headers
+  timing_json      Json?    // Response timing data
+  file_size_bytes  Int
+  captured_at      DateTime
+
+  page             Page     @relation(fields: [page_id], references: [id], onDelete: Cascade)
+
+  @@index([content_hash])
+  @@index([captured_at])
+  @@map("raw_snapshots")
+}
+
+// ========== CHANGE TRACKING ==========
+
+model Diff {
+  id              String     @id @default(uuid())
+  extraction_id   String
+  entity_type     String     // 'operator', 'office', 'product', etc.
+  entity_id       String     // ID of changed entity
+  field           String     // Field that changed
+  old_value       String?    // Previous value (JSON string)
+  new_value       String?    // New value (JSON string)
+  change_type     String     // 'created', 'updated', 'deleted'
+  diff_at         DateTime
+
+  extraction      Extraction @relation(fields: [extraction_id], references: [id], onDelete: Cascade)
+
+  @@index([entity_type, entity_id])
+  @@index([diff_at])
+  @@map("diffs")
+}
+
+// ========== CRAWL MANAGEMENT ==========
+
+model CrawlRun {
+  id           String    @id @default(uuid())
+  operator_id  String?   // If operator-specific crawl
+  run_type     String    // 'discovery', 'full_crawl', 'rescrape', 'validation'
+  started_at   DateTime
+  finished_at  DateTime?
+  status       String    // 'running', 'completed', 'failed', 'cancelled'
+  stats_json   Json?     // Pages crawled, errors, etc.
+  error_message String?
+  triggered_by String?   // 'manual', 'scheduled', 'api'
+
+  operator     Operator? @relation(fields: [operator_id], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([started_at])
+  @@map("crawl_runs")
+}
+
+model RescrapeQueue {
+  id               String    @id @default(uuid())
+  office_id        String    // Office-centric rescanning
+  reason           String    // 'scheduled', 'change_detected', 'manual'
+  priority         String    @default("medium") // high, medium, low
+  requested_at     DateTime
+  scheduled_for    DateTime  // When to execute
+  status           String    @default("pending") // pending, running, completed, failed
+  attempts         Int       @default(0)
+  last_attempt_at  DateTime?
+  error_message    String?
+  completed_at     DateTime?
+
+  office           Office    @relation(fields: [office_id], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduled_for])
+  @@index([office_id])
+  @@map("rescrape_queue")
+}
+
+// ========== SYSTEM MONITORING ==========
+
+model SystemMetric {
+  id          String   @id @default(uuid())
+  metric_name String   // 'pages_crawled', 'extraction_success_rate', etc.
+  value       Float
+  tags_json   Json?    // Additional metadata
+  recorded_at DateTime
+
+  @@index([metric_name, recorded_at])
+  @@map("system_metrics")
+}
+
+model ErrorLog {
+  id            String   @id @default(uuid())
+  level         String   // 'error', 'warning', 'info'
+  message       String
+  context_json  Json?    // Additional context
+  stack_trace   String?
+  logged_at     DateTime
+
+  @@index([level, logged_at])
+  @@map("error_logs")
+}
