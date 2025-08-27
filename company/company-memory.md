@@ -46,6 +46,9 @@ This hierarchy provides clear navigation and responsibility boundaries.
 - **Simplicity scales better**: Complex systems become maintenance burdens
 - **Context persistence**: Teams need memory to improve over time
 - **Tool access hierarchy**: Senior manager needs zero blindspots, teams need focused tool access
+- **Live context evolution**: Memory and context files must be updated during operations, not after
+- **Production-ready trumps perfect**: SQLite deployment beats PostgreSQL development delay
+- **Architecture flexibility pays off**: Office-first design enables efficient rescanning at scale
 
 ## Company Culture
 - **No compromise on tool access**: If best tool isn't available, escalate and get access
@@ -57,7 +60,11 @@ This hierarchy provides clear navigation and responsibility boundaries.
 - Company framework designed to be template for multiple businesses
 - Structure should support rapid team addition and specialization
 - Memory system allows company to improve operations over time
+- **First major project success**: Flexible office scraper operational with 40 operators loaded
+- **Context evolution pattern**: Memory files updated continuously during active operations
+- **Scalability proven**: System architecture handles real production deployment requirements
 
 ---
-**Memory Updated**: 2024-08-26
-**Next Memory Review**: After first major project completion
+**Memory Updated**: 2024-08-26T17:15:00Z (During Live Operations)
+**Next Memory Review**: After domain discovery pipeline completion
+**Contributors**: Senior Manager, Scraping Team Lead

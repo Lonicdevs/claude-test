@@ -1,4 +1,5 @@
-import { Queue, Worker, Job, QueueOptions, WorkerOptions } from 'bullmq'
+import { Queue, Worker, Job } from 'bullmq'
+import type { QueueOptions, WorkerOptions } from 'bullmq'
 import { Redis } from 'ioredis'
 import { pino } from 'pino'
 import { 

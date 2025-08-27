@@ -1,11 +1,12 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
-import { chromium, Browser, Page, BrowserContext } from 'playwright'
+import axios from 'axios'
+import { chromium } from 'playwright'
+import type { Browser, Page, BrowserContext } from 'playwright'
 import * as cheerio from 'cheerio'
 import { createHash } from 'crypto'
 import { pino } from 'pino'
 import robotsParser from 'robots-txt-parse'
 import { URL } from 'whatwg-url'
-import { parseDomain } from 'tldts'
+import { parse as parseDomain } from 'tldts'
 
 const logger = pino({ name: 'scraper' })
 
@@ -17,7 +18,7 @@ const USER_AGENTS = [
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
 ]
 
-const DEFAULT_REQUEST_CONFIG: AxiosRequestConfig = {
+const DEFAULT_REQUEST_CONFIG = {
   timeout: 30000,
   maxRedirects: 5,
   headers: {

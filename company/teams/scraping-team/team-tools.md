@@ -38,6 +38,32 @@
 - **Axios + Cheerio + csv-writer**: Complete static site scraping with structured output
 - **Puppeteer + data validation + JSON export**: Complex site scraping with quality assurance
 
+### Advanced Agent Tools (Operational)
+#### Tool 3: Multi-Agent Processing System
+- **Purpose**: Coordinate multiple specialized agents for complex scraping operations
+- **When to Use**: Large-scale operations, complex data processing pipelines
+- **Usage Examples**: Flexible office scraper with domain discovery → verification → extraction → quality assurance
+- **Setup/Access**: Custom TypeScript agents with SQLite/PostgreSQL backend
+- **Key Commands**:
+  ```bash
+  npm run discover -- --limit 10    # Domain Discovery Agent
+  npm run verify -- --limit 20      # Domain Verification Agent  
+  npm run pipeline -- --limit 50    # Full pipeline orchestration
+  npm run stats                      # Real-time monitoring
+  ```
+
+#### Tool 4: Office-First Database Architecture
+- **Purpose**: Scalable data storage optimized for location-based business scraping
+- **When to Use**: Multi-location businesses requiring targeted rescanning
+- **Usage Examples**: Coworking spaces, retail chains, hospitality networks
+- **Setup/Access**: Prisma ORM with 15+ model schema
+- **Key Commands**:
+  ```bash
+  npm run db:status        # Health check and statistics
+  npm run load-operators   # CSV import with validation
+  npm run db:migrate       # Schema evolution
+  ```
+
 ## Standard Workflows
 
 ### Workflow 1: Site Assessment and Preparation
@@ -114,6 +140,38 @@
 **Success Criteria**: Clean, validated data exported in requested format with complete logging
 **Common Issues**: Rate limiting responses (503/429), structure changes, missing data validation
 
+### Workflow 3: Multi-Agent Pipeline Processing (Operational)
+**Purpose**: Execute large-scale business data collection using coordinated agents
+
+**Steps**:
+1. **Operator Data Loading**:
+   ```bash
+   npm run load-operators -- -f data/operators.csv
+   npm run db:status  # Verify loading
+   ```
+
+2. **Domain Discovery Phase**:
+   ```bash
+   npm run discover -- --limit 50       # Discover domains for operators
+   npm run stats                         # Monitor progress
+   ```
+
+3. **Domain Verification Phase**:
+   ```bash  
+   npm run verify -- --limit 100        # Verify discovered domains
+   npm run stats                         # Check verification rates
+   ```
+
+4. **Pipeline Orchestration**:
+   ```bash
+   npm run pipeline -- --limit 200      # Full automated pipeline
+   # Monitors: Domain discovery → Verification → Page scraping → Data extraction
+   ```
+
+**Quality Assurance**: Real-time statistics, database health checks, complete audit trails
+**Success Criteria**: 60%+ domain verification rate, complete office data extraction, audit compliance
+**Common Issues**: Search engine rate limiting, brand matching edge cases, office location disambiguation
+
 ## Command References
 
 ### Most Used Commands
@@ -126,6 +184,28 @@ node cheerio-scraper.js --url "https://example.com" --output "data.csv"
 
 # Check robots.txt compliance
 node check-robots.js --url "https://example.com" --user-agent "MyBot"
+```
+
+### Production Agent Commands (Operational)
+```bash
+# Database Management
+npm run db:init                       # Initialize database and migrations
+npm run db:status                     # Health check and statistics
+npm run db:migrate                    # Run database migrations
+
+# Data Loading and Management
+npm run load-operators -- -f data/file.csv    # Load operators from CSV
+npm run stats                                  # Show system statistics
+
+# Agent Operations
+npm run discover -- --limit N                 # Domain discovery for N operators  
+npm run verify -- --limit N                   # Domain verification for N candidates
+npm run pipeline -- --limit N                 # Full pipeline for N operators
+
+# Monitoring and Workers
+npm run workers -- --all                      # Start background workers
+npm run workers -- --discovery                # Domain discovery workers only
+npm run workers -- --verification             # Domain verification workers only
 ```
 
 ### Team-Specific Scripts
@@ -143,6 +223,8 @@ node check-robots.js --url "https://example.com" --user-agent "MyBot"
 - **Company Logging**: All scraping activities logged to team and company logs
 - **Data Storage**: Scraped data stored in company data directories
 - **Compliance Framework**: Company-wide compliance policies applied to all scraping
+- **Context Evolution**: Team memory and context files updated during live operations
+- **Master Company Log**: All major milestones logged to company-wide audit trail
 
 ### With Other Teams
 - **Security Team Integration**: Security review of all scraping targets and methods
@@ -155,7 +237,15 @@ node check-robots.js --url "https://example.com" --user-agent "MyBot"
 1. **Morning**: Review overnight scraping results and error logs
 2. **Planning**: Prioritize scraping tasks based on business needs
 3. **Execution**: Implement new scraping projects with full compliance checking
-4. **Evening**: Generate daily activity summary and plan next day
+4. **Context Updates**: Update team memory and context during operations
+5. **Evening**: Generate daily activity summary and plan next day
+
+### Real-Time Operations (Large-Scale Projects)
+1. **Pipeline Monitoring**: Active monitoring of multi-agent processing pipelines
+2. **Statistics Tracking**: Regular `npm run stats` checks for progress assessment
+3. **Error Response**: Immediate response to agent failures or rate limiting
+4. **Context Evolution**: Live updates to team memory with operational insights
+5. **Scaling Decisions**: Dynamic adjustment of processing limits based on performance
 
 ### Weekly Procedures
 1. **Compliance Review**: Audit all scraping activities for legal/ethical compliance
@@ -219,6 +309,7 @@ node check-robots.js --url "https://example.com" --user-agent "MyBot"
 - **Rate Limiting Best Practices**: Team-developed guidelines based on experience
 
 ---
-**Tools Documentation Updated**: 2024-08-26
-**Next Tools Review**: After first major scraping project
+**Tools Documentation Updated**: 2024-08-26T17:20:00Z (Live Operations Update)
+**Next Tools Review**: After domain discovery pipeline completion
 **Maintained By**: Scraping Team Lead
+**Operational Status**: Multi-agent system active with 40 operators loaded

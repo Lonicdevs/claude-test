@@ -1,10 +1,11 @@
 import { URL } from 'url'
 import * as cheerio from 'cheerio'
 import { pino } from 'pino'
-import { parseDomain } from 'tldts'
+import { parse as parseDomain } from 'tldts'
 import { db } from '../lib/database'
 import { DomainVerificationJobSchema } from '../lib/schemas'
-import { unifiedScraper, ScrapingResult } from '../lib/scraper'
+import { unifiedScraper } from '../lib/scraper'
+import type { ScrapingResult } from '../lib/scraper'
 import type { z } from 'zod'
 
 const logger = pino({ name: 'domain-verification-agent' })

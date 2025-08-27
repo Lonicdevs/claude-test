@@ -17,6 +17,20 @@
 - **Benefits**: Optimal performance, reliability, resource efficiency
 - **Examples**: Simple static sites → Cheerio, SPAs → Puppeteer
 
+#### Pattern 3: Office-First Database Architecture
+- **Description**: Design database schema around offices/locations rather than companies for efficient rescanning
+- **When to Use**: Multi-location business data collection projects (coworking, retail, hospitality)
+- **Implementation**: Use deterministic office_id generation, separate office rescan jobs from company discovery
+- **Benefits**: Enables targeted rescanning without full company reprocessing, scales efficiently
+- **Examples**: Flexible office scraper with 15-model schema, office_id-based rescan triggers
+
+#### Pattern 4: Multi-Strategy Domain Discovery
+- **Description**: Combine search engine scraping with intelligent domain guessing for comprehensive coverage
+- **When to Use**: When operators may have websites not easily findable through basic searches
+- **Implementation**: Google/Bing search scraping + brand name variations + common TLD patterns
+- **Benefits**: Higher domain discovery success rate, covers edge cases
+- **Examples**: "WeWork" → search results + wework.com/co/io guessing
+
 ### Workflow Patterns
 #### Workflow 1: Site Assessment and Planning
 - **Process**: 
@@ -53,6 +67,18 @@
 - **Why It Failed**: Puppeteer overkill for simple sites, Cheerio insufficient for dynamic content
 - **Lessons Learned**: Tool selection must match site complexity and requirements
 - **Better Alternative**: Multi-engine approach with appropriate tool selection
+
+### Failed Approach 3: Mixed Import Syntax in ES Modules
+- **What Was Tried**: Using require() statements mixed with ES module imports in TypeScript
+- **Why It Failed**: Node.js ES modules don't support CommonJS require syntax
+- **Lessons Learned**: Modern Node.js projects must use consistent ES module syntax
+- **Better Alternative**: Use `await import()` for dynamic imports, proper type imports
+
+### Failed Approach 4: PostgreSQL Arrays in SQLite Migration
+- **What Was Tried**: Direct schema migration from PostgreSQL arrays to SQLite
+- **Why It Failed**: SQLite doesn't support array column types natively
+- **Lessons Learned**: Database migration requires column type compatibility analysis
+- **Better Alternative**: Use JSON columns for array data in SQLite
 
 ## Tool Usage and Preferences
 
@@ -123,6 +149,9 @@
 - **Site Analysis**: Developing better techniques for assessing scrapability
 - **Compliance Automation**: Building automated compliance checking tools
 - **Data Quality**: Improving automated validation and cleaning procedures
+- **Office-First Architecture**: Successfully implemented rescanning-friendly database design
+- **ES Module Integration**: Mastered modern TypeScript/Node.js import patterns for production systems
+- **Multi-Strategy Domain Discovery**: Proven search engine scraping + domain guessing approach
 
 ### Knowledge Gaps to Address
 - **Advanced Anti-Bot Detection**: Techniques for handling sophisticated blocking
@@ -134,7 +163,30 @@
 - **Priority 2**: Performance optimization for large-scale operations
 - **Priority 3**: Integration with broader data pipeline and analytics systems
 
+## Real Project Insights (Flexible Office Scraper - 2024-08-26)
+
+### Production Architecture Decisions That Worked
+- **SQLite over PostgreSQL for Development**: Enabled immediate deployment without Docker dependency
+- **JSON Columns for Arrays**: Maintained data structure flexibility while ensuring SQLite compatibility
+- **CLI-First Interface**: Provided granular control and debugging capabilities for operations
+- **Office-Centric Data Model**: 15-model schema designed for efficient location-based rescanning
+
+### Operational Patterns Discovered
+- **Import Statement Consistency**: Modern ES modules require careful import syntax - use type imports for types
+- **Database Schema Evolution**: Always plan for database portability early in project design
+- **Multi-Agent Architecture**: Domain discovery + verification pattern scales well for business data collection
+- **Context File Evolution**: Team memory must be updated continuously during builds, not just at completion
+
+### Success Metrics from First Deployment
+- **40 operators loaded successfully** in initial test
+- **Multi-strategy domain discovery** implemented and functional
+- **Complete audit trail** maintained across team and company logs
+- **Real-time operational monitoring** via CLI stats and database queries
+
 ---
-**Memory Last Updated**: 2024-08-26
+**Memory Last Updated**: 2024-08-26T17:15:00Z (During Live Operations)
 **Major Memory Review**: After first major scraping project completion
-**Knowledge Contributor**: Senior Manager (Initial Setup)
+**Knowledge Contributors**: 
+- Senior Manager (Initial Setup)
+- Scraping Team Lead (Production Insights)
+**Next Memory Update**: After domain discovery pipeline completion

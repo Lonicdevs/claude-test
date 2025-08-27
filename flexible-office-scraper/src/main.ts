@@ -33,7 +33,7 @@ program
       await db.connect()
       
       // Generate and run Prisma migrations
-      const { execSync } = require('child_process')
+      const { execSync } = await import('child_process')
       execSync('npx prisma migrate dev --name init', { stdio: 'inherit' })
       execSync('npx prisma generate', { stdio: 'inherit' })
       

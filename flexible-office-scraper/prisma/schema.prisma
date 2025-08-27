@@ -5,26 +5,26 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 // ========== CORE OPERATOR & DOMAIN MODELS ==========
 
 model Operator {
   id              String   @id @default(uuid())
-  brand_name      String
+  brand_name      String   @unique
   legal_name      String?
   tagline         String?
   about_text      String?
   hq_address_json Json?    // Structured address
   phone           String?
-  emails          String[] // Multiple email addresses found
-  social_urls     String[] // Social media URLs
-  brand_tokens    String[] // Keywords for verification
-  logo_urls       String[] // Logo image URLs
-  brand_colors    String[] // Hex colors if detected
-  company_ids     String[] // Company registration numbers if found
+  emails          Json? // Multiple email addresses found
+  social_urls     Json? // Social media URLs
+  brand_tokens    Json? // Keywords for verification
+  logo_urls       Json? // Logo image URLs
+  brand_colors    Json? // Hex colors if detected
+  company_ids     Json? // Company registration numbers if found
   primary_domain  String?  // Verified primary domain
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -64,7 +64,7 @@ model Website {
   domain           String
   canonical_url    String    // Final canonical URL after redirects
   robots_txt_url   String?
-  sitemap_urls     String[]  // Multiple sitemaps
+  sitemap_urls     Json?     // Multiple sitemaps
   first_seen_at    DateTime
   last_seen_at     DateTime
   last_crawl_at    DateTime?
@@ -91,11 +91,11 @@ model Office {
   neighbourhood      String?   // Area/district
   contact_json       Json?     // phone, email, form_url
   opening_hours_json Json?     // Structured hours
-  amenities          String[]  // Normalized amenity codes
-  photos             String[]  // Photo URLs
-  virtual_tour_urls  String[]  // VR/360 tour links
+  amenities          Json?     // Normalized amenity codes
+  photos             Json?     // Photo URLs
+  virtual_tour_urls  Json?     // VR/360 tour links
   transport_notes    String?   // Transit information
-  source_page_ids    String[]  // References to source pages
+  source_page_ids    Json?     // References to source pages
   last_extraction_id String?   // Latest extraction that updated this office
   next_crawl_at      DateTime? // When this office should be rescraped
   crawl_priority     String    @default("medium") // high, medium, low
@@ -126,10 +126,10 @@ model Product {
   capacity_max      Int?      // Maximum capacity
   availability_notes String?   // Availability information
   min_term          String?   // Minimum commitment
-  term_options      String[]  // Available term lengths
+  term_options      Json?     // Available term lengths
   pricing_json      Json?     // Structured pricing with currency, amounts, units
-  inclusions        String[]  // What's included
-  add_ons           String[]  // Available add-ons
+  inclusions        Json?     // What's included
+  add_ons           Json?     // Available add-ons
   booking_link      String?   // Direct booking URL
   last_extraction_id String?  // Latest extraction
   created_at        DateTime  @default(now())
@@ -150,10 +150,10 @@ model MeetingRoom {
   office_id         String
   name              String    // Room name
   capacity          Int?      // Max capacity
-  layouts           String[]  // Seating arrangements
+  layouts           Json?     // Seating arrangements
   rates_json        Json?     // Hourly, half-day, full-day rates
-  amenities         String[]  // Room-specific amenities
-  photos            String[]  // Room photos
+  amenities         Json?     // Room-specific amenities
+  photos            Json?     // Room photos
   booking_link      String?   // Booking URL
   last_extraction_id String?
   created_at        DateTime  @default(now())
