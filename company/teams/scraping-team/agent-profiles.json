@@ -1,0 +1,139 @@
+{
+  "agentProfiles": {
+    "business-registry-specialist": {
+      "id": "brs-001",
+      "name": "Business Registry Specialist",
+      "specialization": ["business_verification", "legal_entity_lookup", "regulatory_compliance"],
+      "capabilities": [
+        "Companies House API integration",
+        "SEC EDGAR database queries",
+        "D&B Hoovers business directory access",
+        "Legal entity name matching",
+        "Registration verification"
+      ],
+      "performanceMetrics": {
+        "successRate": 0.0,
+        "avgProcessingTime": 0,
+        "accuracy": 0.0,
+        "totalJobsProcessed": 0
+      },
+      "contactMethods": {
+        "github": "https://github.com/flexible-office-scraper/agents/tree/business-registry-specialist",
+        "discord": "#business-registry-specialist",
+        "api_endpoint": "http://localhost:3001/api/business-registry"
+      },
+      "toolStack": [
+        "Companies House API",
+        "SEC EDGAR",
+        "D&B Hoovers API",
+        "Business registry databases",
+        "Legal entity verification services"
+      ],
+      "status": "planned"
+    },
+    
+    "property-intelligence-specialist": {
+      "id": "pis-001", 
+      "name": "Property Intelligence Specialist",
+      "specialization": ["property_verification", "commercial_real_estate", "location_intelligence"],
+      "capabilities": [
+        "Commercial property database queries",
+        "LoopNet API integration",
+        "Property management platform access",
+        "Location-based business verification",
+        "Real estate cross-referencing"
+      ],
+      "performanceMetrics": {
+        "successRate": 0.0,
+        "avgProcessingTime": 0,
+        "accuracy": 0.0,
+        "totalJobsProcessed": 0
+      },
+      "contactMethods": {
+        "github": "https://github.com/flexible-office-scraper/agents/tree/property-intelligence-specialist",
+        "discord": "#property-intelligence-specialist", 
+        "api_endpoint": "http://localhost:3002/api/property-intelligence"
+      },
+      "toolStack": [
+        "LoopNet API",
+        "CRE database access",
+        "Rightmove Commercial API",
+        "Property management APIs",
+        "Location intelligence services"
+      ],
+      "status": "planned"
+    },
+
+    "domain-verification-agent": {
+      "id": "dva-001",
+      "name": "Domain Verification Agent", 
+      "specialization": ["domain_validation", "brand_matching", "content_analysis"],
+      "capabilities": [
+        "Website content analysis",
+        "Brand signal detection",
+        "Business validation",
+        "Confidence scoring",
+        "Content quality assessment"
+      ],
+      "performanceMetrics": {
+        "successRate": 0.8,
+        "avgProcessingTime": 3500,
+        "accuracy": 0.9,
+        "totalJobsProcessed": 5
+      },
+      "contactMethods": {
+        "github": "https://github.com/flexible-office-scraper/agents/tree/domain-verification-agent",
+        "discord": "#domain-verification-agent",
+        "api_endpoint": "http://localhost:3003/api/domain-verification"
+      },
+      "toolStack": [
+        "Cheerio HTML parsing",
+        "Axios HTTP client", 
+        "Playwright browser automation",
+        "Content analysis algorithms",
+        "Brand matching systems"
+      ],
+      "status": "operational"
+    },
+
+    "human-intelligence-simulation-specialist": {
+      "id": "hiss-001",
+      "name": "Human Intelligence Simulation Specialist",
+      "specialization": ["agentic_browsing", "human_like_research", "complex_reasoning"],
+      "capabilities": [
+        "Multi-step research workflows",
+        "Context-aware navigation",
+        "Cross-reference validation", 
+        "Logical deduction",
+        "Complex problem solving"
+      ],
+      "performanceMetrics": {
+        "successRate": 0.0,
+        "avgProcessingTime": 0,
+        "accuracy": 0.0,
+        "totalJobsProcessed": 0
+      },
+      "contactMethods": {
+        "github": "https://github.com/flexible-office-scraper/agents/tree/human-intelligence-specialist",
+        "discord": "#human-intelligence-specialist",
+        "api_endpoint": "http://localhost:3004/api/human-intelligence"
+      },
+      "toolStack": [
+        "Claude Code API",
+        "Web browsing capabilities",
+        "Multi-step reasoning engine",
+        "Context management system",
+        "Research methodology frameworks"
+      ],
+      "status": "planned"
+    }
+  },
+  
+  "teamMetrics": {
+    "totalAgents": 4,
+    "operationalAgents": 1, 
+    "plannedAgents": 3,
+    "overallSuccessRate": 0.8,
+    "totalJobsProcessed": 5
+  }
+}
